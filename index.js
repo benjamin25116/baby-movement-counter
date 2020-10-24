@@ -1,3 +1,86 @@
+/*
+Global variables declaration
+*/
+
+let records = [];
+let edit = false;
+
+
+function saveToLocalStorage() {
+	localStorage.setItem("baby-counter", JSON.stringify(records));
+}
+
+function loadFromLocalStorage() {
+	if (localStorage.getItem("baby-counter")) {
+		records = JSON.parse(localStorage.getItem("baby-counter"));
+		renderRecords();
+
+	 }
+}
+
+function resetRecords() {
+	records = [];
+	saveToLocalStorage();
+	loadFromLocalStorage();
+	window.location.reload();
+}
+
+
+function createRow() {
+	let r = document.createElement("TR");
+	r.classList.add("record__row");
+	return r;
+}
+
+function createTimeNode() {
+	let t = document.createElement("TD");
+	t.classList.add("record__data");
+	return t;
+}
+
+function createIntensityNode() {
+	let intensityNode = document.createElement("TD");
+	intensityNode.classList.add("record__data");
+	return intensityNode;
+}
+
+function createKey() {
+	let time = new Date();
+	let key = String(time.getTime());
+	return key;
+}
+
+function createButtonNode(objectKey) {
+	let buttonNode = document.createElement("TD");
+	buttonNode.classList.add("record__data");
+	let deleteButton = createDeleteButton();
+	let key = document.createAttribute("key");
+	key.value = objectKey;
+	console.log(key);
+	deleteButton.setAttributeNode(key);
+	buttonNode.appendChild(deleteButton);
+	return buttonNode;
+}
+
+function renderRecords() {
+	if (records.length > 0){
+		records.map(record=> {
+	let row = createRow();
+	let timeNode = createTimeNode();
+	let intensityNode = createIntensityNode();
+	let buttonNode = createButtonNode(record.key);
+	let timeData = document.createTextNode(record.time);
+	let intensityText = document.createTextNode(record.intensity);
+
+	timeNode.appendChild(timeData);
+	intensityNode.appendChild(intensityText);
+	row.appendChild(timeNode);
+	row.appendChild(intensityNode);
+	row.appendChild(buttonNode);
+  	document.getElementById("record").appendChild(row);
+})} 
+}
+
 function getCurrentTime() {
   /*
   THis function gets the hours and minutes of the day and convert them in to 12-hour system for display. The time suffix AM or PM is also displayed.
@@ -13,7 +96,6 @@ function getCurrentTime() {
 
   let suffix = rawHours < 12 ? "AM" : "PM";
 
-  // console.log(`${displayHours}:${displayMinutes} ${suffix}`);
   return `${displayHours}:${displayMinutes} ${suffix}`;
 }
 
@@ -31,34 +113,34 @@ function createDeleteButton() {
   return buttonIcon;
 }
 
-function addEntry(intensity) {
+function addEntry(intense) {
   /*
-  This function takes a string argument and adds a row of data to the table. It does this by first creating the tr and td elements while adding the relevant class names for styling. 
+  This function takes a string argument and adds a row of data to the table. 
+  It does this by first creating the tr and td elements while adding the 
+  relevant class names for styling. 
 */
 
-  let row = document.createElement("TR");
-  row.classList.add("record__row");
+	let currentTime = getCurrentTime();
+	let objectKey = createKey(); //timecode
 
-  let timeNode = document.createElement("TD");
-  timeNode.classList.add("record__data");
-  let timeData = document.createTextNode(getCurrentTime());
-  timeNode.appendChild(timeData);
+	records.push({key: objectKey, time: currentTime, intensity: intense});
+	
+	let timeText = document.createTextNode(currentTime);
+	let intensityText = document.createTextNode(intense);
+	
+	
+	let row = createRow();
+	let timeNode = createTimeNode();
+	let intensityNode = createIntensityNode();	
+	let buttonNode = createButtonNode(objectKey); // pass timecode into createButtonNode
 
-  let intensityNode = document.createElement("TD");
-  intensityNode.classList.add("record__data");
-  let intensityText = document.createTextNode(intensity);
-  intensityNode.appendChild(intensityText);
-
-  let buttonNode = document.createElement("TD");
-  buttonNode.classList.add("record__data");
-  let deleteButton = createDeleteButton();
-  buttonNode.appendChild(deleteButton);
-
-  row.append(timeNode);
-  row.append(intensityNode);
-  row.append(buttonNode);
-
-  document.getElementById("record").appendChild(row);
+	timeNode.appendChild(timeText);
+	intensityNode.appendChild(intensityText);
+	row.appendChild(timeNode);
+	row.appendChild(intensityNode);
+	row.appendChild(buttonNode);
+	document.getElementById("record").appendChild(row);
+	saveToLocalStorage();
 }
 
 function recordGentle() {
@@ -69,11 +151,11 @@ function recordGiant() {
   addEntry("GIANT");
 }
 
-let edit = false;
-
 function editEntries() {
   /*
-  This function toggles the visibility of the delete button for editing purposes. It uses the "edit" boolean variable to determine whether to hide or not.  While in editing mode, the movement buttons are hidden.
+  This function toggles the visibility of the delete button for editing 
+  purposes. It uses the "edit" boolean variable to determine whether to 
+  hide or not.  While in editing mode, the movement buttons are hidden.
   */
 
   let trash = document.getElementsByClassName("record__button--trash");
@@ -84,7 +166,7 @@ function editEntries() {
 
   let movementButtons = document.getElementsByClassName("movement__button");
   for (let i = 0; i < movementButtons.length; i++) {
-    toggleVisibility(movementButtons[i]);
+	movementButtons[i].style.visibility = edit === true? "visible": "hidden"; 
   }
 
   if (edit === false) {
@@ -96,18 +178,24 @@ function editEntries() {
 
 function deleteEntry() {
   /*
- this function is assuming that it is appended on the FontAwesome trash icon. The hierarchy is table > tr > td > i (FontAwesome icon)
+ this function is assuming that it is appended on the FontAwesome trash icon. 
+ The hierarchy is table > tr > td > i (FontAwesome icon).
  */
-  let td = this.parentNode;
-  let tr = td.parentNode;
-  let table = tr.parentNode;
-  table.removeChild(tr);
-}
 
-function toggleVisibility(element) {
-  if (edit === true) {
-    element.style.visibility = "visible";
-  } else {
-    element.style.visibility = "hidden";
-  }
+	if (confirm("Delete this data?")){
+		let td = this.parentNode;
+		let tr = td.parentNode;
+		let table = tr.parentNode;
+		table.removeChild(tr);
+		let t = this.getAttribute("key");
+		console.log(typeof t);
+		
+		// Update records array.
+		records = records.filter(record => {
+			return record.key !== this.getAttribute("key");	
+		})
+
+		saveToLocalStorage();
+	}
+  
 }

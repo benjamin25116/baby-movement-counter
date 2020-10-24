@@ -9,7 +9,7 @@
     <script src="https://kit.fontawesome.com/d199d1748f.js" crossorigin="anonymous"></script>
 </head>
 
-<body>
+<body onload="loadFromLocalStorage()">
     <div class="wrapper">
         <header class="header">
             <h1 class="header__title">Baby Movement Counter</h1>
@@ -18,8 +18,8 @@
 
 
         <div class="movement">
-            <a class="movement__button movement__button--gentle" onclick="recordGentle()">gentle</a>
-            <a class="movement__button movement__button--giant" onclick="recordGiant()">GIANT</a>
+            <a class="movement__button movement__button--gentle" onclick=recordGentle()>gentle</a>
+            <a class="movement__button movement__button--giant" onclick=recordGiant()>GIANT</a>
         </div>
 
         <table class="record" id="record">
@@ -37,6 +37,9 @@
                         class="far fa-trash-alt record__button record__button--trash"></i></td>
             </tr> -->
         </table>
+        <div class="reset">
+            <a class="reset__button" onclick=resetRecords()>Reset records</a>
+        </div>
     </div>
 
     <script src="/index.js"></script>

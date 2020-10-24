@@ -11,9 +11,6 @@ body {
  padding: 15px;
 }
 
-.header {
-}
-
 .header__title {
 margin-bottom: 0.25em;
 font-weight: bold;
@@ -23,7 +20,7 @@ font-weight: bold;
  margin-bottom: 1em;
 }
 
-.movement {
+.movement, .reset {
  display: flex;
  justify-content: center;
  margin-bottom: 1em;
@@ -38,6 +35,10 @@ padding: 1.75em;
 margin: 0.25em;
 }
 
+.movement__button:hover, .reset__button:hover {
+    cursor: pointer;
+}
+
 .movement__button--gentle {
  font-style: italic;
 }
@@ -49,10 +50,11 @@ margin: 0.25em;
 .record {
  /* border: 1px solid green; */
  width: 100%;
+ margin-bottom: 1em;
 }
 
 .record__row:hover {
-background: rgb(231, 231, 231);
+background: rgb(238, 238, 238);
 }
 
 .record__header {
@@ -67,4 +69,12 @@ padding: 0.75em 1.25em;
 
 .record__button--trash {
  visibility: hidden;
+}
+
+.reset__button {
+    min-width: 100%;
+    background-color: rgb(252, 240, 231);
+    text-align: center;
+    padding: 1em 0;
+    border-radius: 10px;
 }
