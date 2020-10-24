@@ -1,35 +1,44 @@
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Baby Movement Counter</title>
+    <link rel="stylesheet" href="/reset.css">
     <link rel="stylesheet" href="/style.css">
+    <script src="https://kit.fontawesome.com/d199d1748f.js" crossorigin="anonymous"></script>
 </head>
+
 <body>
-    <header class="header">
-        <h1 class="header__title">Baby Movement Counter</h1>
-        <p class="header__description">Tap once on the button to log a movement.</p>
-    </header>
+    <div class="wrapper">
+        <header class="header">
+            <h1 class="header__title">Baby Movement Counter</h1>
+            <p class="header__description">Tap once on the button to log a movement.</p>
+        </header>
 
 
-    <div class="movement">
-        <input type="button" value="gentle" class="movement__button movement__button--gentle">
-        <input type="button" value="giant" class="movement__button movement__button--giant">
+        <div class="movement">
+            <a class="movement__button movement__button--gentle" onclick="recordGentle()">gentle</a>
+            <a class="movement__button movement__button--giant" onclick="recordGiant()">GIANT</a>
+        </div>
+
+        <table class="record" id="record">
+            <tr>
+                <th class="record__data record__header">Time</th>
+                <th class="record__data record__header">Intensity</th>
+                <th class="record__data record__header"><i class="far fa-edit record__button record__button--edit"></i>
+                </th>
+            </tr>
+            <tr class="record__row" id="record__row">
+                <td class="record__data">1:45pm</td>
+                <td class="record__data">Gentle</td>
+                <td class="record__data" id="trash"><i
+                        class="far fa-trash-alt record__button record__button--trash"></i></td>
+            </tr>
+        </table>
     </div>
-
-    <table class="record">
-        <tr class="record__row">
-            <th class="record__header">Time</th>
-            <th class="record__header">Intensity</th>
-            <th class="record__header"><input type="button" value="edit" class="record__button record__button--edit"></th>
-        </tr>
-        <tr class="record__row">
-            <td class="record__data">1:45pm</td>
-            <td class="record__data">Gentle</td>
-            <td class="record__data"><input type="button" value="delete" class="record__button record__button--delete"></td>
-        </tr>
-    </table>
 
     <script src="/index.js"></script>
 </body>
+
 </html>
