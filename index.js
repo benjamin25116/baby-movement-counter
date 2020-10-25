@@ -5,80 +5,80 @@ Global variables declaration
 let records = [];
 let edit = false;
 
-
 function saveToLocalStorage() {
-	localStorage.setItem("baby-counter", JSON.stringify(records));
+  localStorage.setItem("baby-counter", JSON.stringify(records));
 }
 
 function loadFromLocalStorage() {
-	if (localStorage.getItem("baby-counter")) {
-		records = JSON.parse(localStorage.getItem("baby-counter"));
-		renderRecords();
-
-	 }
+  if (localStorage.getItem("baby-counter")) {
+    records = JSON.parse(localStorage.getItem("baby-counter"));
+    renderRecords();
+  }
 }
 
 function resetRecords() {
-	records = [];
-	saveToLocalStorage();
-	loadFromLocalStorage();
-	window.location.reload();
+  if (confirm("Reset all records?")) {
+    records = [];
+    saveToLocalStorage();
+    loadFromLocalStorage();
+    window.location.reload();
+  }
 }
 
-
 function createRow() {
-	let r = document.createElement("TR");
-	r.classList.add("record__row");
-	return r;
+  let r = document.createElement("TR");
+  r.classList.add("record__row");
+  return r;
 }
 
 function createTimeNode() {
-	let t = document.createElement("TD");
-	t.classList.add("record__data");
-	return t;
+  let t = document.createElement("TD");
+  t.classList.add("record__data");
+  return t;
 }
 
 function createIntensityNode() {
-	let intensityNode = document.createElement("TD");
-	intensityNode.classList.add("record__data");
-	return intensityNode;
+  let intensityNode = document.createElement("TD");
+  intensityNode.classList.add("record__data");
+  return intensityNode;
 }
 
 function createKey() {
-	let time = new Date();
-	let key = String(time.getTime());
-	return key;
+  let time = new Date();
+  let key = String(time.getTime());
+  return key;
 }
 
 function createButtonNode(objectKey) {
-	let buttonNode = document.createElement("TD");
-	buttonNode.classList.add("record__data");
-	let deleteButton = createDeleteButton();
-	let key = document.createAttribute("key");
-	key.value = objectKey;
-	console.log(key);
-	deleteButton.setAttributeNode(key);
-	buttonNode.appendChild(deleteButton);
-	return buttonNode;
+  let buttonNode = document.createElement("TD");
+  buttonNode.classList.add("record__data");
+  let deleteButton = createDeleteButton();
+  let key = document.createAttribute("key");
+  key.value = objectKey;
+  console.log(key);
+  deleteButton.setAttributeNode(key);
+  buttonNode.appendChild(deleteButton);
+  return buttonNode;
 }
 
 function renderRecords() {
-	if (records.length > 0){
-		records.map(record=> {
-	let row = createRow();
-	let timeNode = createTimeNode();
-	let intensityNode = createIntensityNode();
-	let buttonNode = createButtonNode(record.key);
-	let timeData = document.createTextNode(record.time);
-	let intensityText = document.createTextNode(record.intensity);
+  if (records.length > 0) {
+    records.map((record) => {
+      let row = createRow();
+      let timeNode = createTimeNode();
+      let intensityNode = createIntensityNode();
+      let buttonNode = createButtonNode(record.key);
+      let timeData = document.createTextNode(record.time);
+      let intensityText = document.createTextNode(record.intensity);
 
-	timeNode.appendChild(timeData);
-	intensityNode.appendChild(intensityText);
-	row.appendChild(timeNode);
-	row.appendChild(intensityNode);
-	row.appendChild(buttonNode);
-  	document.getElementById("record").appendChild(row);
-})} 
+      timeNode.appendChild(timeData);
+      intensityNode.appendChild(intensityText);
+      row.appendChild(timeNode);
+      row.appendChild(intensityNode);
+      row.appendChild(buttonNode);
+      document.getElementById("record").appendChild(row);
+    });
+  }
 }
 
 function getCurrentTime() {
@@ -120,27 +120,26 @@ function addEntry(intense) {
   relevant class names for styling. 
 */
 
-	let currentTime = getCurrentTime();
-	let objectKey = createKey(); //timecode
+  let currentTime = getCurrentTime();
+  let objectKey = createKey(); //timecode
 
-	records.push({key: objectKey, time: currentTime, intensity: intense});
-	
-	let timeText = document.createTextNode(currentTime);
-	let intensityText = document.createTextNode(intense);
-	
-	
-	let row = createRow();
-	let timeNode = createTimeNode();
-	let intensityNode = createIntensityNode();	
-	let buttonNode = createButtonNode(objectKey); // pass timecode into createButtonNode
+  records.push({ key: objectKey, time: currentTime, intensity: intense });
 
-	timeNode.appendChild(timeText);
-	intensityNode.appendChild(intensityText);
-	row.appendChild(timeNode);
-	row.appendChild(intensityNode);
-	row.appendChild(buttonNode);
-	document.getElementById("record").appendChild(row);
-	saveToLocalStorage();
+  let timeText = document.createTextNode(currentTime);
+  let intensityText = document.createTextNode(intense);
+
+  let row = createRow();
+  let timeNode = createTimeNode();
+  let intensityNode = createIntensityNode();
+  let buttonNode = createButtonNode(objectKey); // pass timecode into createButtonNode
+
+  timeNode.appendChild(timeText);
+  intensityNode.appendChild(intensityText);
+  row.appendChild(timeNode);
+  row.appendChild(intensityNode);
+  row.appendChild(buttonNode);
+  document.getElementById("record").appendChild(row);
+  saveToLocalStorage();
 }
 
 function recordGentle() {
@@ -166,7 +165,7 @@ function editEntries() {
 
   let movementButtons = document.getElementsByClassName("movement__button");
   for (let i = 0; i < movementButtons.length; i++) {
-	movementButtons[i].style.visibility = edit === true? "visible": "hidden"; 
+    movementButtons[i].style.visibility = edit === true ? "visible" : "hidden";
   }
 
   if (edit === false) {
@@ -182,20 +181,19 @@ function deleteEntry() {
  The hierarchy is table > tr > td > i (FontAwesome icon).
  */
 
-	if (confirm("Delete this data?")){
-		let td = this.parentNode;
-		let tr = td.parentNode;
-		let table = tr.parentNode;
-		table.removeChild(tr);
-		let t = this.getAttribute("key");
-		console.log(typeof t);
-		
-		// Update records array.
-		records = records.filter(record => {
-			return record.key !== this.getAttribute("key");	
-		})
+  if (confirm("Delete this data?")) {
+    let td = this.parentNode;
+    let tr = td.parentNode;
+    let table = tr.parentNode;
+    table.removeChild(tr);
+    let t = this.getAttribute("key");
+    console.log(typeof t);
 
-		saveToLocalStorage();
-	}
-  
+    // Update records array.
+    records = records.filter((record) => {
+      return record.key !== this.getAttribute("key");
+    });
+
+    saveToLocalStorage();
+  }
 }
