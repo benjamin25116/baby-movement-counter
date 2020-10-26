@@ -13,7 +13,7 @@
     <div class="wrapper">
         <header class="header">
             <h1 class="header__title">Baby Movement Counter</h1>
-            <p class="header__description">Tap once on the button to log a movement.</p>
+            <p class="header__description">Yay! Baby moved! What kind of movement was it?</p>
         </header>
 
 
@@ -22,7 +22,11 @@
             <a class="movement__button movement__button--giant" onclick=recordGiant()>GIANT</a>
         </div>
 
-        <table class="record" id="record">
+        <div class="record-header">
+            <p class="record-header__date">Date</p><span class="record-header__separator"></span>
+            <p class="record-header__tally">Tally</p>
+        </div>
+        <table class="record__table" id="record">
             <tr>
                 <th class="record__data record__header">Time</th>
                 <th class="record__data record__header">Intensity</th>
@@ -37,8 +41,9 @@
                         class="far fa-trash-alt record__button record__button--trash"></i></td>
             </tr> -->
         </table>
+
         <div class="reset">
-            <a class="reset__button" onclick=resetRecords()>Reset records</a>
+            <a class="reset__button" onclick=resetRecords()>Reset</a>
         </div>
     </div>
 
