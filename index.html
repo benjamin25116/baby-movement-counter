@@ -9,7 +9,7 @@
     <script src="https://kit.fontawesome.com/d199d1748f.js" crossorigin="anonymous"></script>
 </head>
 
-<body onload="loadFromLocalStorage()">
+<body onload="loadApp()">
     <div class="wrapper">
         <header class="header">
             <h1 class="header__title">Baby Movement Counter</h1>
@@ -24,7 +24,7 @@
 
         <div class="record-header">
             <p class="record-header__date">Date</p><span class="record-header__separator"></span>
-            <p class="record-header__tally">Tally</p>
+            <p class="record-header__tally">Baby sleeping</p>
         </div>
         <table class="record__table" id="record">
             <tr>
@@ -42,8 +42,8 @@
             </tr> -->
         </table>
 
-        <div class="reset">
-            <a class="reset__button" onclick=resetRecords()>Reset</a>
+        <div class="clear">
+            <a class="clear__button" onclick=clearRecords()>Clear all</a>
         </div>
     </div>
 

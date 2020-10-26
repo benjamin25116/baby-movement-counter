@@ -4,24 +4,32 @@ Global variables declaration
 
 let records = [];
 let edit = false;
+let date;
+let tally;
+
+function loadApp() {
+  loadFromLocalStorage();
+  date = getCurrentDate();
+  renderDate();
+  updateTally();
+}
 
 function saveToLocalStorage() {
-  localStorage.setItem("baby-counter", JSON.stringify(records));
+  localStorage.setItem("records", JSON.stringify(records));
+  localStorage.setItem("date", JSON.stringify(date));
+  localStorage.setItem("tally", JSON.stringify(tally));
 }
 
 function loadFromLocalStorage() {
-  if (localStorage.getItem("baby-counter")) {
-    records = JSON.parse(localStorage.getItem("baby-counter"));
+  if (localStorage.getItem("records")) {
+    records = JSON.parse(localStorage.getItem("records"));
     renderRecords();
   }
-}
-
-function resetRecords() {
-  if (confirm("Reset all records?")) {
-    records = [];
-    saveToLocalStorage();
-    loadFromLocalStorage();
-    window.location.reload();
+  if (localStorage.getItem("date")) {
+    date = JSON.parse(localStorage.getItem("date"));
+  }
+  if (localStorage.getItem("tally")) {
+    tally = JSON.parse(localStorage.getItem("tally"));
   }
 }
 
@@ -55,7 +63,6 @@ function createButtonNode(objectKey) {
   let deleteButton = createDeleteButton();
   let key = document.createAttribute("key");
   key.value = objectKey;
-  console.log(key);
   deleteButton.setAttributeNode(key);
   buttonNode.appendChild(deleteButton);
   return buttonNode;
@@ -81,22 +88,91 @@ function renderRecords() {
   }
 }
 
+function renderDate() {
+  let d = document.querySelector(".record-header__date");
+  d.innerHTML = date;
+}
+
 function getCurrentTime() {
   /*
   THis function gets the hours and minutes of the day and convert them in to 12-hour system for display. The time suffix AM or PM is also displayed.
  */
 
-  let date = new Date();
+  let d = new Date();
 
-  let rawHours = date.getHours();
+  let rawHours = d.getHours();
   let displayHours = rawHours < 12 ? rawHours : rawHours - 12;
 
-  let rawMinutes = date.getMinutes();
+  let rawMinutes = d.getMinutes();
   let displayMinutes = rawMinutes < 10 ? `0${rawMinutes}` : rawMinutes;
 
   let suffix = rawHours < 12 ? "AM" : "PM";
 
   return `${displayHours}:${displayMinutes} ${suffix}`;
+}
+
+function getCurrentDate() {
+  let d = new Date();
+  let day = d.getDate();
+  let month = d.getMonth();
+  switch (day) {
+    case 1:
+    case 21:
+    case 31:
+      day = `${day}st`;
+      break;
+    case 2:
+    case 22:
+      day = `${day}nd`;
+      break;
+    case 3:
+    case 23:
+      day = `${day}rd`;
+      break;
+    default:
+      day = `${day}th`;
+      break;
+  }
+
+  switch (month) {
+    case 0:
+      month = "Jan";
+      break;
+    case 1:
+      month = "Feb";
+      break;
+    case 2:
+      month = "Mar";
+      break;
+    case 3:
+      month = "Apr";
+      break;
+    case 4:
+      month = "May";
+      break;
+    case 5:
+      month = "Jun";
+      break;
+    case 6:
+      month = "Jul";
+      break;
+    case 7:
+      month = "Aug";
+      break;
+    case 8:
+      month = "Sep";
+      break;
+    case 9:
+      month = "Oct";
+      break;
+    case 10:
+      month = "Nov";
+      break;
+    case 11:
+      month = "Dec";
+      break;
+  }
+  return `${day} ${month}`;
 }
 
 function createDeleteButton() {
@@ -142,12 +218,29 @@ function addEntry(intense) {
   saveToLocalStorage();
 }
 
+function updateTally() {
+  tally = records.length;
+  text = document.querySelector(".record-header__tally");
+  switch (tally) {
+    case 0:
+      text.innerHTML = "Baby sleeping";
+      break;
+    case 1:
+      text.innerHTML = `${tally} movement`;
+      break;
+    default:
+      text.innerHTML = `${tally} movements`;
+  }
+}
+
 function recordGentle() {
   addEntry("gentle");
+  updateTally();
 }
 
 function recordGiant() {
   addEntry("GIANT");
+  updateTally();
 }
 
 function editEntries() {
@@ -157,21 +250,26 @@ function editEntries() {
   hide or not.  While in editing mode, the movement buttons are hidden.
   */
 
-  let trash = document.getElementsByClassName("record__button--trash");
-
-  for (let i = 0; i < trash.length; i++) {
-    trash[i].style.visibility = edit === false ? "visible" : "hidden";
-  }
-
-  let movementButtons = document.getElementsByClassName("movement__button");
-  for (let i = 0; i < movementButtons.length; i++) {
-    movementButtons[i].style.visibility = edit === true ? "visible" : "hidden";
-  }
-
   if (edit === false) {
     edit = true;
   } else {
     edit = false;
+  }
+
+  let trash = document.getElementsByClassName("record__button--trash");
+
+  for (let i = 0; i < trash.length; i++) {
+    trash[i].style.visibility = edit === true ? "visible" : "hidden";
+  }
+
+  if (trash.length > 1) {
+    let clear = document.querySelector(".clear__Button");
+    clear.style.visibility = edit === true ? "visible" : "hidden";
+  }
+
+  let movementButtons = document.getElementsByClassName("movement__button");
+  for (let i = 0; i < movementButtons.length; i++) {
+    movementButtons[i].style.visibility = edit === false ? "visible" : "hidden";
   }
 }
 
@@ -195,5 +293,22 @@ function deleteEntry() {
     });
 
     saveToLocalStorage();
+    updateTally();
+  }
+
+  if (tally === 0) {
+    let movementButtons = document.getElementsByClassName("movement__button");
+    for (let i = 0; i < movementButtons.length; i++) {
+      movementButtons[i].style.visibility = "visible";
+    }
+    let clear = document.querySelector(".clear__Button");
+    clear.style.visibility = "hidden";
+  }
+}
+
+function clearRecords() {
+  if (confirm("Clear all records?")) {
+    localStorage.clear();
+    window.location.reload();
   }
 }

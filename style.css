@@ -57,7 +57,7 @@ margin: 1.5em 0.25em;
  margin-bottom: 0.5em;
  font-size: 1.5rem;
  display: flex;
- justify-content: space-around;
+ justify-content: center;
  align-items: center;
 }
 
@@ -66,16 +66,19 @@ margin: 1.5em 0.25em;
     height: 1em;
     background: orange;
     border-radius: 1em;
-    font-size: 0.8rem;
+    font-size: 0.5rem;
 }
 
 .record-header__date {
     font-weight: bold;
 }
 
+.record-header__date, .record-header__separator, .record-header__tally {
+    margin: 0 0.5em;
+}
+
 .record__table {
     width: 100%;
-    margin-bottom: 1.5em;
 }
 
 
@@ -97,12 +100,14 @@ background: rgb(238, 238, 238);
  visibility: hidden;
 }
 
-.reset {
+.clear {
     display: flex;
-    justify-content: flex-start;
+    justify-content: flex-end;
+    margin-bottom: 1.5em;
+
 }
 
-.reset__button {
+.clear__button {
     /* min-width: 100%; */
     background-color: rgb(201, 63, 21);
     text-align: center;
@@ -111,4 +116,6 @@ background: rgb(238, 238, 238);
     color: white;
     font-weight: bold;
     font-size: 0.8rem;
+    margin-right: 1.5em;
+    visibility: hidden;
 }
