@@ -1,42 +1,44 @@
-/*
+/**********************************************
 This app keeps track of the number of taps on the "movement" buttons. 
 It displays the time of the tap and the current date, together with
 the total number of "movements".
-*/
 
-/*
+**********************************************/
+
+/**********************************************
 Table of Contents:
 
-1. Global variable declaratons
+1. Global variable declaratons & main()
 
 2.  onClick functions
-    2.1   recordGentle()
-    2.2   recordGiant()
-    2.3   addEntry()
-    2.4   editEntries()
-    2.5   deleteEntry()
-    2.6   clearEntries()
+    2.1   recordMovement()
+    2.2   addEntry()
+    2.3   editEntries()
+    2.4   deleteEntry()
+    2.5   clearEntries()
 
 3.  Date functions
     3.1   getCurrentTime()
     3.2   getCurrentDate()
 
-4.  Render functions
+4.  Display functions
     4.1   renderRecords()
     4.2   renderDate()
     4.3   renderNumberOfMovements()
+    4.4   toggleButtons()
 
-5.  Utility functions
-    5.1   main()
-    5.2   saveToLocalStorage()
-    5.3   loadFromLocalStorage()
-    5.4   addRowNode()
-    5.5   addTimeNode()
-    5.6   addIntensityNode()
-    5.7   addKey()
-    5.8   addButtonNode()
-    5.9   addDeleteButton()
-*/
+5.  Utility functions   
+    5.1   saveToLocalStorage()
+    5.2   loadFromLocalStorage()
+    5.3   addRowNode()
+    5.4   addTimeNode()
+    5.5   addIntensityNode()
+    5.6   addKey()
+    5.7   addButtonNode()
+    5.8   addDeleteButton()
+    5.9   updateNumberOfMovement()
+
+**********************************************/
 
 // 1. Global variables declaration
 
@@ -54,84 +56,79 @@ let isEditing = false;
 let currentDate;
 let numberOfMovements;
 
+function main() {
+  loadFromLocalStorage();
+  renderDate();
+  renderRecords();
+  updateNumberOfMovements();
+  renderNumberOfMovements();
+
+  /* addEventListeners for all buttons except the delete button. 
+  That is handled in addDeleteButton().
+  */
+  let movementButtons = document.querySelectorAll(".movement__button");
+  for (const button of movementButtons) {
+    button.addEventListener("click", recordMovement);
+    button.addEventListener("click", saveToLocalStorage);
+  }
+
+  let clearButton = document.querySelector(".clear__button");
+  clearButton.addEventListener("click", clearEntries);
+  clearButton.addEventListener("click", saveToLocalStorage);
+
+  let editButton = document.querySelector(".record__button--edit");
+  editButton.addEventListener("click", editEntries);
+}
+
 // 2. onClick functions
 
-function recordGentle() {
-  console.log("Gentle pressed");
-  addEntry("gentle");
-  renderNumberOfMovements();
+function recordMovement() {
+  addEntry(this.innerHTML);
+  updateNumberOfMovements();
+  // console.log(`${this.innerHTML} pressed`);
 }
 
-function recordGiant() {
-  console.log("Giant pressed");
-  addEntry("GIANT");
-  renderNumberOfMovements();
-}
-
-function addEntry(intense) {
+function addEntry(arg) {
   /*
-  This function takes a string argument and adds a row of data to the table. 
+  Takes a string argument and adds a row of data to the table. 
   It does this by first creating the tr and td elements while adding the 
   relevant class names for styling. 
   */
 
-  let currentTime = getCurrentTime();
   let objectKey = addKey(); //timecode
+  let currentTime = getCurrentTime();
 
-  records.push({ key: objectKey, time: currentTime, intensity: intense });
+  // Update records
+  records.push({ key: objectKey, time: currentTime, intensity: arg });
 
-  let timeText = document.createTextNode(currentTime);
-  let intensityText = document.createTextNode(intense);
-
-  let row = addRowNode();
   let timeNode = addTimeNode();
   let intensityNode = addIntensityNode();
-  let buttonNode = addButtonNode(objectKey); // pass timecode into createButtonNode
+  let buttonNode = addButtonNode(objectKey);
+  timeNode.appendChild(document.createTextNode(currentTime));
+  intensityNode.appendChild(document.createTextNode(arg));
 
-  timeNode.appendChild(timeText);
-  intensityNode.appendChild(intensityText);
+  let row = addRowNode();
   row.appendChild(timeNode);
   row.appendChild(intensityNode);
   row.appendChild(buttonNode);
   document.getElementById("record").appendChild(row);
-  saveToLocalStorage();
 }
 
 function editEntries() {
   /*
   This function toggles the visibility of the delete button for editing 
-  purposes. It uses the "edit" boolean variable to determine whether to 
-  hide or not.  While in editing mode, the movement buttons are hidden.
+  purposes via the "isEditing" boolean. When isEditing === true, the movement
+  buttons are hidden, while the Clear all and the trash buttons are visible.
   */
   console.log("Edit pressed");
 
-  if (isEditing === false) {
-    isEditing = true;
-  } else {
-    isEditing = false;
-  }
+  isEditing = isEditing === false ? true : false;
 
   if (records.length === 0) {
     alert("Nothing to edit!");
     return;
   } else {
-    /*
-  Conditional rendering for trash, clear and movement buttons while editing.
-  */
-    let trashButtons = document.querySelectorAll(".record__button--trash");
-    for (const button of trashButtons) {
-      button.style.visibility = isEditing === true ? "visible" : "hidden";
-    }
-
-    if (trashButtons.length > 1) {
-      let clear = document.querySelector(".clear__Button");
-      clear.style.visibility = isEditing === true ? "visible" : "hidden";
-    }
-
-    let movementButtons = document.querySelectorAll(".movement__button");
-    for (const button of movementButtons) {
-      button.style.visibility = isEditing === false ? "visible" : "hidden";
-    }
+    toggleButtons();
   }
 }
 
@@ -148,7 +145,6 @@ function deleteEntry() {
     let tr = td.parentNode;
     let table = tr.parentNode;
     table.removeChild(tr);
-    let t = this.getAttribute("key");
 
     /* Update records array. Returns every record that doesn't match the 
     key of the deleted record.
@@ -156,56 +152,20 @@ function deleteEntry() {
     records = records.filter((record) => {
       return record.key !== this.getAttribute("key");
     });
-
-    renderNumberOfMovements();
-    saveToLocalStorage();
   }
-
-  /*
-  Conditional rendering of movement and clear buttons depending on how 
-  many items left on record.
-  */
-
-  if (records.length === 0) {
-    let movementButtons = document.getElementsByClassName("movement__button");
-    for (const button of movementButtons) {
-      button.style.visibility = "visible";
-    }
-    isEditing = false;
-  } else if (records.length < 2) {
-    document.querySelector(".clear__Button").style.visibility = "hidden";
-  }
+  toggleButtons();
 }
 
 function clearEntries() {
   if (confirm("Clear all records?")) {
-    // Purge contents from records array
+    // Update records
     records = [];
-
-    // Remove rows from table
-    let table = document.getElementById("record");
-    while (table.childElementCount > 1) {
-      table.removeChild(table.childNodes[2]);
-    }
-
-    // Show movement buttons
-    let movementButtons = document.querySelectorAll(".movement__button");
-    for (const button of movementButtons) {
-      button.style.visibility = "visible";
-    }
-
-    // Hide clear button
-    let clear = document.querySelector(".clear__Button");
-    clear.style.visibility = "hidden";
-
-    // Toggles isEditing to false
     isEditing = false;
+    toggleButtons();
+    updateNumberOfMovements();
+    renderRecords();
 
-    // Update numberOfMovement counter
-    renderNumberOfMovements();
-
-    // Update local storage cache
-    localStorage.clear();
+    console.log("Clear all pressed");
   }
 }
 
@@ -220,7 +180,7 @@ function getCurrentTime() {
   let d = new Date();
 
   let rawHours = d.getHours();
-  let displayHours = rawHours < 12 ? rawHours : rawHours - 12;
+  let displayHours = rawHours < 13 ? rawHours : rawHours - 12;
 
   let rawMinutes = d.getMinutes();
   let displayMinutes = rawMinutes < 10 ? `0${rawMinutes}` : rawMinutes;
@@ -298,7 +258,7 @@ function getCurrentDate() {
   return `${day} ${month}`;
 }
 
-// 4. Render functions
+// 4. Display functions
 
 function renderRecords() {
   if (records.length > 0) {
@@ -317,6 +277,12 @@ function renderRecords() {
       row.appendChild(buttonNode);
       document.getElementById("record").appendChild(row);
     });
+  } else {
+    // Remove rows from table
+    let table = document.getElementById("record");
+    while (table.childElementCount > 1) {
+      table.removeChild(table.childNodes[2]);
+    }
   }
 }
 
@@ -327,8 +293,6 @@ function renderDate() {
 }
 
 function renderNumberOfMovements() {
-  numberOfMovements = records.length;
-  console.log(typeof numberOfMovements);
   text = document.querySelector(".record-header__tally");
   switch (numberOfMovements) {
     case 0:
@@ -342,30 +306,56 @@ function renderNumberOfMovements() {
   }
 }
 
-// 5. Utility functions
+function toggleButtons() {
+  /*
+  Conditional rendering for trash, clear and movement buttons while editing.
+  */
+  let trashButtons = document.querySelectorAll(".record__button--trash");
+  for (const button of trashButtons) {
+    button.style.visibility = isEditing === true ? "visible" : "hidden";
+  }
 
-function main() {
-  loadFromLocalStorage();
-  renderDate();
-  renderNumberOfMovements();
+  if (trashButtons.length > 1) {
+    let clear = document.querySelector(".clear__Button");
+    clear.style.visibility = isEditing === true ? "visible" : "hidden";
+  }
+
+  let movementButtons = document.querySelectorAll(".movement__button");
+  for (const button of movementButtons) {
+    button.style.visibility = isEditing === false ? "visible" : "hidden";
+  }
+
+  /*
+  Conditional rendering of movement and clear buttons depending on how 
+  many items left on record.
+  */
+  if (records.length === 0) {
+    for (const button of movementButtons) {
+      button.style.visibility = "visible";
+    }
+    isEditing = false;
+  } else if (records.length < 2) {
+    document.querySelector(".clear__Button").style.visibility = "hidden";
+  }
 }
+
+// 5. Utility functions
 
 function saveToLocalStorage() {
   localStorage.setItem("records", JSON.stringify(records));
   localStorage.setItem("date", JSON.stringify(currentDate));
-  localStorage.setItem("tally", JSON.stringify(numberOfMovements));
+  localStorage.setItem("numberOfMovements", JSON.stringify(numberOfMovements));
 }
 
 function loadFromLocalStorage() {
   if (localStorage.getItem("records")) {
     records = JSON.parse(localStorage.getItem("records"));
-    renderRecords();
   }
   if (localStorage.getItem("date")) {
     currentDate = JSON.parse(localStorage.getItem("date"));
   }
-  if (localStorage.getItem("tally")) {
-    numberOfMovements = JSON.parse(localStorage.getItem("tally"));
+  if (localStorage.getItem("numberOfMovements")) {
+    numberOfMovements = JSON.parse(localStorage.getItem("numberOfMovements"));
   }
 }
 
@@ -388,25 +378,39 @@ function addIntensityNode() {
 }
 
 function addKey() {
+  /*
+This function assumes that only one person will be using the app at
+any given time and that the storage is done locally since the key
+is actually the time that has elapse since 1970 in miliseconds. 
+@return {string} A unique-ish key for the delete button.
+*/
+
   let time = new Date();
   let key = String(time.getTime());
   return key;
 }
 
-function addButtonNode(objectKey) {
+function addButtonNode(keyValue) {
+  /*
+  This takes in a key value and appends it to the delete button.
+  @param {string} A unique key
+  @return {HTML element}. A table cell.
+  */
   let buttonNode = document.createElement("TD");
   buttonNode.classList.add("record__data");
   let deleteButton = addDeleteButton();
-  let key = document.createAttribute("key");
-  key.value = objectKey;
-  deleteButton.setAttributeNode(key);
+  let keyAttribute = document.createAttribute("key");
+  keyAttribute.value = keyValue;
+  deleteButton.setAttributeNode(keyAttribute);
   buttonNode.appendChild(deleteButton);
   return buttonNode;
 }
 
 function addDeleteButton() {
   /*
-  This function creates an 'i' element with the relevant class names for the FontAwesome "trash" icon.
+  This function creates an 'i' element with the relevant class 
+  names for the FontAwesome "trash" icon.
+  @return {HTML element} An button with trash icon.
   */
 
   let buttonIcon = document.createElement("i");
@@ -414,6 +418,14 @@ function addDeleteButton() {
   buttonIcon.classList.add("fa-trash-alt");
   buttonIcon.classList.add("record__button");
   buttonIcon.classList.add("record__button--trash");
+  buttonIcon.innerHTML = "del"; //temporary
   buttonIcon.addEventListener("click", deleteEntry);
+  buttonIcon.addEventListener("click", updateNumberOfMovements);
+  buttonIcon.addEventListener("click", saveToLocalStorage);
   return buttonIcon;
+}
+
+function updateNumberOfMovements() {
+  numberOfMovements = records.length;
+  renderNumberOfMovements();
 }

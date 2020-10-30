@@ -6,7 +6,7 @@
     <title>Baby Movement Counter</title>
     <link rel="stylesheet" href="/reset.css">
     <link rel="stylesheet" href="/style.css">
-    <script src="https://kit.fontawesome.com/d199d1748f.js" crossorigin="anonymous"></script>
+    <!-- <script src="https://kit.fontawesome.com/d199d1748f.js" crossorigin="anonymous"></script> -->
     <script src="/index.js"></script>
 </head>
 
@@ -19,8 +19,8 @@
 
 
         <div class="movement">
-            <a class="movement__button movement__button--gentle" onclick="recordGentle()">gentle</a>
-            <a class="movement__button movement__button--giant" onclick=recordGiant()>GIANT</a>
+            <a class="movement__button movement__button--gentle">gentle</a>
+            <a class="movement__button movement__button--giant">GIANT</a>
         </div>
 
         <div class="record-header">
@@ -31,8 +31,8 @@
             <tr>
                 <th class="record__data record__header">Time</th>
                 <th class="record__data record__header">Intensity</th>
-                <th class="record__data record__header"><i class="far fa-edit record__button record__button--edit"
-                        onclick="editEntries()"></i>
+                <th class="record__data record__header"><i
+                        class="far fa-edit record__button record__button--edit">edit</i>
                 </th>
             </tr>
             <!-- <tr class="record__row" id="record__row">
@@ -44,7 +44,7 @@
         </table>
 
         <div class="clear">
-            <a class="clear__button" onclick=clearEntries()>Clear all</a>
+            <a class="clear__button">Clear all</a>
         </div>
     </div>
 </body>
