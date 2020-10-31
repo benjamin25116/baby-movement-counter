@@ -418,7 +418,7 @@ function addDeleteButton() {
   buttonIcon.classList.add("fa-trash-alt");
   buttonIcon.classList.add("record__button");
   buttonIcon.classList.add("record__button--trash");
-  buttonIcon.innerHTML = "del"; //temporary
+  // buttonIcon.innerHTML = "del";
   buttonIcon.addEventListener("click", deleteEntry);
   buttonIcon.addEventListener("click", updateNumberOfMovements);
   buttonIcon.addEventListener("click", saveToLocalStorage);
