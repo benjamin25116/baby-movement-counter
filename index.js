@@ -316,7 +316,7 @@ function toggleButtons() {
   }
 
   if (trashButtons.length > 1) {
-    let clear = document.querySelector(".clear__Button");
+    let clear = document.querySelector(".clear__button");
     clear.style.visibility = isEditing === true ? "visible" : "hidden";
   }
 
