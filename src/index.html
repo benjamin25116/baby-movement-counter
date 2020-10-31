@@ -1,0 +1,51 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baby Movement Counter</title>
+    <link rel="stylesheet" href="/reset.css">
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://kit.fontawesome.com/d199d1748f.js" crossorigin="anonymous"></script>
+    <script src="/index.js"></script>
+</head>
+
+<body onload="main()">
+    <div class="wrapper">
+        <header class="header">
+            <h1 class="header__title">Baby Movement Counter</h1>
+            <p class="header__description">Yay! Baby moved! What kind of movement was it?</p>
+        </header>
+
+
+        <div class="movement">
+            <a class="movement__button movement__button--gentle">gentle</a>
+            <a class="movement__button movement__button--giant">GIANT</a>
+        </div>
+
+        <div class="record-header">
+            <p class="record-header__date">Date</p><span class="record-header__separator"></span>
+            <p class="record-header__tally">Baby sleeping</p>
+        </div>
+        <table class="record__table" id="record">
+            <tr>
+                <th class="record__data record__header">Time</th>
+                <th class="record__data record__header">Intensity</th>
+                <th class="record__data record__header"><i class="far fa-edit record__button record__button--edit"></i>
+                </th>
+            </tr>
+            <!-- <tr class="record__row" id="record__row">
+                <td class="record__data">1:45pm</td>
+                <td class="record__data">Gentle</td>
+                <td class="record__data" id="trash"><i
+                        class="far fa-trash-alt record__button record__button--trash"></i></td>
+            </tr> -->
+        </table>
+
+        <div class="clear">
+            <a class="clear__button">Clear all</a>
+        </div>
+    </div>
+</body>
+
+</html>

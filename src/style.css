@@ -1,0 +1,130 @@
+body {
+ /* background-color: rgb(241, 255, 253); */
+ box-sizing: border-box;
+}
+.wrapper {
+ background-color: white;
+ max-width: 420px;
+ padding: 2em;
+ margin: 0 auto;
+}
+
+.header {
+    text-align: center;
+}
+.header__title {
+margin: 0.5em 0;
+font-weight: bold;
+line-height: 2.3rem;
+}
+
+.header__description {
+ margin-bottom: 0.75em;
+ line-height: 1.7rem;
+ font-size: 1.3rem;
+}
+
+.movement, .reset {
+ display: flex;
+ justify-content: center;
+ margin-bottom: 1em;
+}
+
+.movement__button {
+width: calc(100% / 2);
+text-align: center;
+background-color: rgb(255, 141, 53);
+color: white;
+font-weight: bold;
+font-size: 1.3rem;
+border-radius: 50px;
+padding: 1.25em;
+margin: 1.5em 0.25em;
+}
+
+.movement__button:hover, 
+.reset__button:hover,
+.record__button--edit:hover,
+.record__button--trash:hover  {
+    cursor: pointer;
+}
+
+.movement__button--gentle {
+ font-style: italic;
+ font-weight: normal;
+}
+
+.movement__button--giant {
+ font-weight: bold;
+}
+
+.record-header {
+ padding: 0 0.8em;
+ margin-bottom: 0.5em;
+ font-size: 1.125rem;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+}
+
+.record-header__separator {
+    width: 1em;
+    height: 1em;
+    background: orange;
+    border-radius: 1em;
+    font-size: 0.5rem;
+}
+
+.record-header__date {
+    font-weight: bold;
+}
+
+.record-header__date, .record-header__separator, .record-header__tally {
+    margin: 0 0.5em;
+}
+
+.record__table {
+    width: 100%;
+}
+
+.record__row {
+    transition: background 0.25s ease-in-out;
+}
+
+.record__row:hover {
+background: rgb(238, 238, 238);
+}
+
+.record__header {
+ font-weight: bold;
+ text-align: left;
+ background: rgb(255, 218, 184)
+}
+
+.record__data {
+    padding: 0.75em 1.25em;
+}
+
+.record__button--trash {
+ visibility: hidden;
+}
+
+.clear {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1.5em;
+
+}
+
+.clear__button {
+    /* min-width: 100%; */
+    background-color: rgb(201, 63, 21);
+    text-align: center;
+    padding: 0.8em 2em;
+    border-radius: 1.3em;
+    color: white;
+    font-weight: bold;
+    font-size: 0.8rem;
+    margin-right: 1.5em;
+    visibility: hidden;
+}
